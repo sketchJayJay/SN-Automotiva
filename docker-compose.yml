@@ -1,0 +1,15 @@
+services:
+  sn-servicos:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: 5000
+      DATA_DIR: /app/data
+      SECRET_KEY: ${SECRET_KEY:-troque-essa-chave-no-coolify}
+    volumes:
+      - sn_servicos_data:/app/data
+    ports:
+      - "5000:5000"
+
+volumes:
+  sn_servicos_data:

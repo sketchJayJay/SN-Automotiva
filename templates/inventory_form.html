@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Editar item | SN Serviços Automotivos{% endblock %}
+{% block heading %}Editar item do estoque{% endblock %}
+{% block content %}
+<form class="card form-card" method="post">
+  <div class="form-grid">
+    <label>Nome<input required name="name" value="{{ item.name }}"></label>
+    <label>Categoria<input name="category" value="{{ item.category }}"></label>
+    <label>Preço<input name="unit_price" value="{{ '%.2f'|format(item.unit_price) }}"></label>
+    <label>Quantidade<input name="qty" value="{{ '%.2f'|format(item.qty) }}"></label>
+    <label>Qtd. mínima<input name="min_qty" value="{{ '%.2f'|format(item.min_qty) }}"></label>
+  </div>
+  <div class="row-actions end">
+    <a class="btn btn-ghost" href="{{ url_for('inventory') }}">Cancelar</a>
+    <button class="btn btn-primary" type="submit">Salvar</button>
+  </div>
+</form>
+{% endblock %}

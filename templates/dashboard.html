@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Início | SN Serviços Automotivos{% endblock %}
+{% block heading %}Painel da oficina{% endblock %}
+{% block content %}
+<div class="grid cards-5">
+  <div class="card stat"><span>Clientes</span><strong>{{ stats.clients }}</strong></div>
+  <div class="card stat"><span>Veículos</span><strong>{{ stats.vehicles }}</strong></div>
+  <div class="card stat"><span>OS abertas</span><strong>{{ stats.open_orders }}</strong></div>
+  <div class="card stat"><span>Estoque baixo</span><strong>{{ stats.low_stock }}</strong></div>
+  <div class="card stat accent"><span>Faturamento do mês</span><strong>{{ money(monthly_total) }}</strong></div>
+</div>
+
+<div class="split">
+  <div class="card hero-card">
+    <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="SN Serviços Automotivos">
+    <div>
+      <h2>Controle completo da SN</h2>
+      <p>Cadastre clientes, abra ordens de serviço, controle peças e veja o financeiro sem bagunça de papel. A oficina fica com motor novo no digital. 🔧</p>
+      <div class="row-actions">
+        <a class="btn btn-primary" href="{{ url_for('order_new') }}">Abrir OS</a>
+        <a class="btn btn-ghost" href="{{ url_for('inventory') }}">Ver estoque</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h2>Últimas OS</h2>
+      <a href="{{ url_for('orders') }}">Ver todas</a>
+    </div>
+    <div class="table-wrap compact">
+      <table>
+        <thead><tr><th>OS</th><th>Cliente</th><th>Veículo</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for os in recent_orders %}
+          <tr>
+            <td><a href="{{ url_for('order_view', order_id=os.id) }}">#{{ os.id }}</a></td>
+            <td>{{ os.client_name }}</td>
+            <td>{{ os.plate or 'Sem placa' }} {{ os.model }}</td>
+            <td><span class="badge {{ 'ok' if os.status == 'Fechada' else 'warn' }}">{{ os.status }}</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="empty">Nenhuma OS criada ainda.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

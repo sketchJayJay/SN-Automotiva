@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}OS #{{ order.id }} | SN Serviços Automotivos{% endblock %}
+{% block heading %}Ordem de serviço #{{ order.id }}{% endblock %}
+{% block content %}
+<div class="print-actions no-print">
+  <a class="btn btn-ghost" href="{{ url_for('orders') }}">Voltar</a>
+  <a class="btn btn-ghost" href="{{ url_for('order_edit', order_id=order.id) }}">Editar OS</a>
+  <button class="btn btn-primary" onclick="window.print()">Imprimir / Salvar PDF</button>
+</div>
+
+<article class="os-print">
+  <header class="os-header">
+    <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="SN Serviços Automotivos">
+    <div>
+      <h2>Ordem de Serviço #{{ order.id }}</h2>
+      <p>SN Serviços Automotivos</p>
+      <p>Data: {{ br_date(order.order_date) }} | Status: {{ order.status }}</p>
+    </div>
+  </header>
+
+  <section class="print-grid">
+    <div>
+      <h3>Cliente</h3>
+      <p><strong>{{ order.client_name }}</strong></p>
+      <p>Telefone: {{ order.phone or '-' }}</p>
+      <p>CPF/CNPJ: {{ order.document or '-' }}</p>
+      <p>Endereço: {{ order.address or '-' }}</p>
+    </div>
+    <div>
+      <h3>Veículo</h3>
+      <p><strong>{{ order.brand }} {{ order.model }}</strong></p>
+      <p>Placa: {{ order.plate or '-' }}</p>
+      <p>Ano: {{ order.year or '-' }} | Cor: {{ order.color or '-' }}</p>
+      <p>KM atual: {{ order.km_atual or order.vehicle_km or 0 }}</p>
+    </div>
+  </section>
+
+  <section>
+    <h3>Serviço / diagnóstico</h3>
+    <p class="box-text">{{ order.description or 'Sem descrição.' }}</p>
+  </section>
+
+  <section>
+    <h3>Peças e itens</h3>
+    <table class="print-table">
+      <thead><tr><th>Item</th><th>Qtd</th><th>Valor unit.</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr><td>{{ item.name }}</td><td>{{ item.qty }}</td><td>{{ money(item.unit_price) }}</td><td>{{ money(item.total) }}</td></tr>
+        {% else %}
+        <tr><td colspan="4">Nenhum item lançado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="totals">
+    <div class="notes">
+      <h3>Observações</h3>
+      <p>{{ order.notes or 'Sem observações.' }}</p>
+      <p class="legal">Garantia conforme serviço realizado e legislação vigente. Peças substituídas e serviços descritos acima foram conferidos com o cliente.</p>
+    </div>
+    <div class="total-card">
+      <p>Peças: <strong>{{ money(totals['items']) }}</strong></p>
+      <p>Mão de obra: <strong>{{ money(totals['labor']) }}</strong></p>
+      <p>Desconto: <strong>{{ money(totals['discount']) }}</strong></p>
+      <hr>
+      <p class="grand">Total: <strong>{{ money(totals['total']) }}</strong></p>
+    </div>
+  </section>
+
+  <footer class="signature">
+    <div></div>
+    <p>Assinatura do cliente</p>
+  </footer>
+</article>
+{% endblock %}

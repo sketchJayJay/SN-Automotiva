@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Relatórios | SN Serviços Automotivos{% endblock %}
+{% block heading %}Relatórios financeiros{% endblock %}
+{% block content %}
+<div class="card">
+  <form class="toolbar" method="get">
+    <label>Início<input type="date" name="start" value="{{ start }}"></label>
+    <label>Fim<input type="date" name="end" value="{{ end }}"></label>
+    <select name="status">
+      <option value="" {{ 'selected' if not status else '' }}>Todos os status</option>
+      <option value="Aberta" {{ 'selected' if status == 'Aberta' else '' }}>Aberta</option>
+      <option value="Fechada" {{ 'selected' if status == 'Fechada' else '' }}>Fechada</option>
+      <option value="Cancelada" {{ 'selected' if status == 'Cancelada' else '' }}>Cancelada</option>
+    </select>
+    <button class="btn btn-primary" type="submit">Gerar</button>
+    <button class="btn btn-ghost" type="button" onclick="window.print()">Imprimir</button>
+  </form>
+</div>
+
+<div class="grid cards-5">
+  <div class="card stat"><span>OS no período</span><strong>{{ summary['count'] }}</strong></div>
+  <div class="card stat"><span>Peças</span><strong>{{ money(summary['items']) }}</strong></div>
+  <div class="card stat"><span>Mão de obra</span><strong>{{ money(summary['labor']) }}</strong></div>
+  <div class="card stat"><span>Descontos</span><strong>{{ money(summary['discount']) }}</strong></div>
+  <div class="card stat accent"><span>Total</span><strong>{{ money(summary['total']) }}</strong></div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Data</th><th>OS</th><th>Cliente</th><th>Veículo</th><th>Status</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>{{ br_date(row.order_date) }}</td>
+          <td><a href="{{ url_for('order_view', order_id=row.id) }}">#{{ row.id }}</a></td>
+          <td>{{ row.client_name }}</td>
+          <td>{{ row.plate or 'Sem placa' }} {{ row.model }}</td>
+          <td><span class="badge {{ 'ok' if row.status == 'Fechada' else 'warn' }}">{{ row.status }}</span></td>
+          <td><strong>{{ money(row.total) }}</strong></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="empty">Nenhum lançamento no período.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

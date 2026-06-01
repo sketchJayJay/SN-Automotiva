@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Ordens de Serviço | SN Serviços Automotivos{% endblock %}
+{% block heading %}Ordens de serviço{% endblock %}
+{% block content %}
+<div class="card">
+  <form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar por cliente, placa, modelo ou serviço">
+    <select name="status">
+      <option value="" {{ 'selected' if not status else '' }}>Todos os status</option>
+      <option value="Aberta" {{ 'selected' if status == 'Aberta' else '' }}>Aberta</option>
+      <option value="Fechada" {{ 'selected' if status == 'Fechada' else '' }}>Fechada</option>
+      <option value="Cancelada" {{ 'selected' if status == 'Cancelada' else '' }}>Cancelada</option>
+    </select>
+    <button class="btn btn-primary" type="submit">Filtrar</button>
+    <a class="btn btn-ghost" href="{{ url_for('order_new') }}">+ Nova OS</a>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>OS</th><th>Data</th><th>Cliente</th><th>Veículo</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead>
+      <tbody>
+        {% for os in orders %}
+        <tr>
+          <td><a href="{{ url_for('order_view', order_id=os.id) }}"><strong>#{{ os.id }}</strong></a></td>
+          <td>{{ br_date(os.order_date) }}</td>
+          <td>{{ os.client_name }}</td>
+          <td>{{ os.plate or 'Sem placa' }} {{ os.model }}</td>
+          <td><strong>{{ money(os.total) }}</strong></td>
+          <td>
+            <form method="post" action="{{ url_for('order_status', order_id=os.id) }}">
+              <select name="status" onchange="this.form.submit()">
+                <option {{ 'selected' if os.status == 'Aberta' else '' }}>Aberta</option>
+                <option {{ 'selected' if os.status == 'Fechada' else '' }}>Fechada</option>
+                <option {{ 'selected' if os.status == 'Cancelada' else '' }}>Cancelada</option>
+              </select>
+            </form>
+          </td>
+          <td class="actions">
+            <a class="mini" href="{{ url_for('order_view', order_id=os.id) }}">Ver</a>
+            <a class="mini" href="{{ url_for('order_edit', order_id=os.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('order_delete', order_id=os.id) }}" onsubmit="return confirm('Excluir esta OS? O estoque das peças será restaurado.')">
+              <button class="mini danger" type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="empty">Nenhuma OS encontrada.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

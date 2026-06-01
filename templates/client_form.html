@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if client else 'Novo' }} cliente | SN Serviços Automotivos{% endblock %}
+{% block heading %}{{ 'Editar cadastro' if client else 'Novo cliente' }}{% endblock %}
+{% block content %}
+<form class="card form-card" method="post">
+  <h2>Dados do cliente</h2>
+  <div class="form-grid">
+    <label>Nome completo / Empresa<input required name="name" value="{{ client.name if client else '' }}"></label>
+    <label>Telefone / WhatsApp<input name="phone" value="{{ client.phone if client else '' }}"></label>
+    <label>CPF/CNPJ<input name="document" value="{{ client.document if client else '' }}"></label>
+    <label class="wide">Endereço<input name="address" value="{{ client.address if client else '' }}"></label>
+  </div>
+  <h2>Veículo principal</h2>
+  <div class="form-grid">
+    <label>Placa<input name="plate" value="{{ vehicle.plate if vehicle else '' }}" placeholder="ABC1D23"></label>
+    <label>Marca<input name="brand" value="{{ vehicle.brand if vehicle else '' }}" placeholder="Fiat, VW, Chevrolet..."></label>
+    <label>Modelo<input name="model" value="{{ vehicle.model if vehicle else '' }}" placeholder="Gol, Onix, Strada..."></label>
+    <label>Ano<input name="year" value="{{ vehicle.year if vehicle else '' }}"></label>
+    <label>Cor<input name="color" value="{{ vehicle.color if vehicle else '' }}"></label>
+    <label>KM atual<input name="km" type="number" value="{{ vehicle.km if vehicle else 0 }}"></label>
+  </div>
+  <div class="row-actions end">
+    <a class="btn btn-ghost" href="{{ url_for('clients') }}">Cancelar</a>
+    <button class="btn btn-primary" type="submit">Salvar cadastro</button>
+  </div>
+</form>
+{% endblock %}

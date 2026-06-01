@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Clientes | SN Serviços Automotivos{% endblock %}
+{% block heading %}Clientes & veículos{% endblock %}
+{% block content %}
+<div class="card">
+  <form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar por nome, telefone, CPF/CNPJ, placa ou modelo">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+    <a class="btn btn-ghost" href="{{ url_for('client_new') }}">+ Novo cliente</a>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Cliente</th><th>Telefone</th><th>Documento</th><th>Veículos</th><th>Ações</th></tr></thead>
+      <tbody>
+        {% for client in clients %}
+        <tr>
+          <td><strong>{{ client.name }}</strong><br><small>{{ client.address }}</small></td>
+          <td>{{ client.phone or '-' }}</td>
+          <td>{{ client.document or '-' }}</td>
+          <td>{{ client.vehicles or 'Nenhum veículo' }}</td>
+          <td class="actions">
+            <a class="mini" href="{{ url_for('client_edit', client_id=client.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('client_delete', client_id=client.id) }}" onsubmit="return confirm('Excluir cliente e veículos?')">
+              <button class="mini danger" type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="empty">Nenhum cliente encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
