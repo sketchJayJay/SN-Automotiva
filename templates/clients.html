@@ -14,11 +14,11 @@
       <tbody>
         {% for client in clients %}
         <tr>
-          <td><strong>{{ client.name }}</strong><br><small>{{ client.address }}</small></td>
-          <td>{{ client.phone or '-' }}</td>
-          <td>{{ client.document or '-' }}</td>
-          <td>{{ client.vehicles or 'Nenhum veículo' }}</td>
-          <td class="actions">
+          <td data-label="Cliente"><strong>{{ client.name }}</strong><br><small>{{ client.address }}</small></td>
+          <td data-label="Telefone">{{ client.phone or '-' }}</td>
+          <td data-label="Documento">{{ client.document or '-' }}</td>
+          <td data-label="Veículos">{{ client.vehicles or 'Nenhum veículo' }}</td>
+          <td class="actions" data-label="Ações">
             <a class="mini" href="{{ url_for('client_edit', client_id=client.id) }}">Editar</a>
             <form method="post" action="{{ url_for('client_delete', client_id=client.id) }}" onsubmit="return confirm('Excluir cliente e veículos?')">
               <button class="mini danger" type="submit">Excluir</button>

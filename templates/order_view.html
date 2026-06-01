@@ -46,7 +46,7 @@
       <thead><tr><th>Item</th><th>Qtd</th><th>Valor unit.</th><th>Total</th></tr></thead>
       <tbody>
         {% for item in items %}
-        <tr><td>{{ item.name }}</td><td>{{ item.qty }}</td><td>{{ money(item.unit_price) }}</td><td>{{ money(item.total) }}</td></tr>
+        <tr><td data-label="Item">{{ item.name }}</td><td data-label="Qtd">{{ item.qty }}</td><td data-label="Valor unit.">{{ money(item.unit_price) }}</td><td data-label="Total">{{ money(item.total) }}</td></tr>
         {% else %}
         <tr><td colspan="4">Nenhum item lançado.</td></tr>
         {% endfor %}

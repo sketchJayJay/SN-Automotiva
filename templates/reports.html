@@ -32,12 +32,12 @@
       <tbody>
         {% for row in rows %}
         <tr>
-          <td>{{ br_date(row.order_date) }}</td>
-          <td><a href="{{ url_for('order_view', order_id=row.id) }}">#{{ row.id }}</a></td>
-          <td>{{ row.client_name }}</td>
-          <td>{{ row.plate or 'Sem placa' }} {{ row.model }}</td>
-          <td><span class="badge {{ 'ok' if row.status == 'Fechada' else 'warn' }}">{{ row.status }}</span></td>
-          <td><strong>{{ money(row.total) }}</strong></td>
+          <td data-label="Data">{{ br_date(row.order_date) }}</td>
+          <td data-label="OS"><a href="{{ url_for('order_view', order_id=row.id) }}">#{{ row.id }}</a></td>
+          <td data-label="Cliente">{{ row.client_name }}</td>
+          <td data-label="Veículo">{{ row.plate or 'Sem placa' }} {{ row.model }}</td>
+          <td data-label="Status"><span class="badge {{ 'ok' if row.status == 'Fechada' else 'warn' }}">{{ row.status }}</span></td>
+          <td data-label="Total"><strong>{{ money(row.total) }}</strong></td>
         </tr>
         {% else %}
         <tr><td colspan="6" class="empty">Nenhum lançamento no período.</td></tr>

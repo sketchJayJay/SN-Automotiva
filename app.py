@@ -6,7 +6,7 @@ from datetime import datetime, date
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, flash, g, redirect, render_template, request, url_for
+from flask import Flask, flash, g, make_response, redirect, render_template, request, send_from_directory, url_for
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = Path(os.environ.get("DATA_DIR", BASE_DIR / "data"))
@@ -259,6 +259,15 @@ def save_order_items(order_id: int, form: dict[str, list[str]]) -> None:
             db.execute("UPDATE inventory SET qty = qty - ? WHERE id = ?", (qty, inv_id))
     db.commit()
 
+
+
+
+@app.route("/service-worker.js")
+def service_worker():
+    response = make_response(send_from_directory(app.static_folder, "service-worker.js"))
+    response.headers["Content-Type"] = "application/javascript; charset=utf-8"
+    response.headers["Service-Worker-Allowed"] = "/"
+    return response
 
 @app.route("/")
 def dashboard():

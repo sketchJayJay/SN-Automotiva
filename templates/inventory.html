@@ -7,9 +7,9 @@
     <h2>Novo item</h2>
     <label>Nome<input required name="name" placeholder="Ex: Filtro de óleo"></label>
     <label>Categoria<input name="category" placeholder="Óleo, Freio, Elétrica..."></label>
-    <label>Preço<input name="unit_price" placeholder="0,00"></label>
-    <label>Quantidade<input name="qty" placeholder="0"></label>
-    <label>Qtd. mínima<input name="min_qty" placeholder="0"></label>
+    <label>Preço<input name="unit_price" inputmode="decimal" placeholder="0,00"></label>
+    <label>Quantidade<input name="qty" inputmode="decimal" placeholder="0"></label>
+    <label>Qtd. mínima<input name="min_qty" inputmode="decimal" placeholder="0"></label>
     <button class="btn btn-primary" type="submit">Salvar item</button>
   </form>
 
@@ -24,12 +24,12 @@
         <tbody>
           {% for item in inventory %}
           <tr>
-            <td><strong>{{ item.name }}</strong></td>
-            <td>{{ item.category or '-' }}</td>
-            <td>{{ money(item.unit_price) }}</td>
-            <td>{{ item.qty }}</td>
-            <td><span class="badge {{ 'warn' if item.qty <= item.min_qty else 'ok' }}">{{ 'Baixo' if item.qty <= item.min_qty else 'OK' }}</span></td>
-            <td class="actions">
+            <td data-label="Item"><strong>{{ item.name }}</strong></td>
+            <td data-label="Categoria">{{ item.category or '-' }}</td>
+            <td data-label="Preço">{{ money(item.unit_price) }}</td>
+            <td data-label="Qtd">{{ item.qty }}</td>
+            <td data-label="Status"><span class="badge {{ 'warn' if item.qty <= item.min_qty else 'ok' }}">{{ 'Baixo' if item.qty <= item.min_qty else 'OK' }}</span></td>
+            <td class="actions" data-label="Ações">
               <a class="mini" href="{{ url_for('inventory_edit', item_id=item.id) }}">Editar</a>
               <form method="post" action="{{ url_for('inventory_delete', item_id=item.id) }}" onsubmit="return confirm('Excluir item do estoque?')">
                 <button class="mini danger" type="submit">Excluir</button>

@@ -10,6 +10,18 @@
   <div class="card stat accent"><span>Faturamento do mês</span><strong>{{ money(monthly_total) }}</strong></div>
 </div>
 
+<div class="card quick-actions no-print">
+  <div class="section-title">
+    <h2>Ações rápidas</h2>
+  </div>
+  <div class="quick-grid">
+    <a class="quick-tile" href="{{ url_for('order_new') }}"><span>🧾</span>Nova OS<small>Abrir serviço</small></a>
+    <a class="quick-tile" href="{{ url_for('client_new') }}"><span>👤</span>Novo cliente<small>Cadastro rápido</small></a>
+    <a class="quick-tile" href="{{ url_for('inventory') }}"><span>🧰</span>Estoque<small>Peças e valores</small></a>
+    <a class="quick-tile" href="{{ url_for('reports') }}"><span>📊</span>Financeiro<small>Resumo por data</small></a>
+  </div>
+</div>
+
 <div class="split">
   <div class="card hero-card">
     <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="SN Serviços Automotivos">
@@ -18,7 +30,7 @@
       <p>Cadastre clientes, abra ordens de serviço, controle peças e veja o financeiro sem bagunça de papel. A oficina fica com motor novo no digital. 🔧</p>
       <div class="row-actions">
         <a class="btn btn-primary" href="{{ url_for('order_new') }}">Abrir OS</a>
-        <a class="btn btn-ghost" href="{{ url_for('inventory') }}">Ver estoque</a>
+        <a class="btn btn-ghost" href="{{ url_for('orders') }}">Ver OS</a>
       </div>
     </div>
   </div>
@@ -34,10 +46,10 @@
         <tbody>
           {% for os in recent_orders %}
           <tr>
-            <td><a href="{{ url_for('order_view', order_id=os.id) }}">#{{ os.id }}</a></td>
-            <td>{{ os.client_name }}</td>
-            <td>{{ os.plate or 'Sem placa' }} {{ os.model }}</td>
-            <td><span class="badge {{ 'ok' if os.status == 'Fechada' else 'warn' }}">{{ os.status }}</span></td>
+            <td data-label="OS"><a href="{{ url_for('order_view', order_id=os.id) }}">#{{ os.id }}</a></td>
+            <td data-label="Cliente">{{ os.client_name }}</td>
+            <td data-label="Veículo">{{ os.plate or 'Sem placa' }} {{ os.model }}</td>
+            <td data-label="Status"><span class="badge {{ 'ok' if os.status == 'Fechada' else 'warn' }}">{{ os.status }}</span></td>
           </tr>
           {% else %}
           <tr><td colspan="4" class="empty">Nenhuma OS criada ainda.</td></tr>

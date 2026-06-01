@@ -1,6 +1,33 @@
 {% extends 'base.html' %}
 {% block title %}{{ 'Editar OS' if order else 'Nova OS' }} | SN Serviços Automotivos{% endblock %}
 {% block heading %}{{ 'Editar ordem de serviço' if order else 'Nova ordem de serviço' }}{% endblock %}
+
+{% macro item_row(item=None) -%}
+  <div class="item-row">
+    <label class="item-field"><span>Buscar item</span>
+      <input type="search" class="product-search" autocomplete="off" value="{{ item.name if item else '' }}" placeholder="Buscar item no estoque..." oninput="filterProductSelect(this)" onkeydown="selectFirstProduct(event, this)">
+    </label>
+    <label class="item-field"><span>Selecionar estoque</span>
+      <select name="inventory_id" class="product-select" onchange="fillProduct(this)">
+        <option value="">Item manual</option>
+        {% for p in inventory %}
+          <option value="{{ p.id }}" data-name="{{ p.name }}" data-price="{{ '%.2f'|format(p.unit_price) }}" data-search="{{ p.name }} {{ p.category or '' }} {{ '%.2f'|format(p.unit_price) }}" {{ 'selected' if item and item.inventory_id == p.id else '' }}>{{ p.name }} | {{ money(p.unit_price) }} | qtd {{ p.qty }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="item-field"><span>Nome do item</span>
+      <input name="item_name" value="{{ item.name if item else '' }}" placeholder="Nome do item">
+    </label>
+    <label class="item-field"><span>Qtd</span>
+      <input name="item_qty" inputmode="decimal" value="{{ '%.2f'|format(item.qty) if item else '1' }}" placeholder="Qtd">
+    </label>
+    <label class="item-field"><span>Preço</span>
+      <input name="item_price" inputmode="decimal" value="{{ '%.2f'|format(item.unit_price) if item else '' }}" placeholder="Preço">
+    </label>
+    <button class="mini danger" type="button" onclick="this.closest('.item-row').remove()">Remover</button>
+  </div>
+{%- endmacro %}
+
 {% block content %}
 <form class="card form-card" method="post">
   <div class="section-title">
@@ -11,7 +38,7 @@
   <div class="form-grid">
     <label>Buscar cliente
       <input type="search" id="clientSearch" autocomplete="off" placeholder="Digite nome, CPF/CNPJ ou telefone...">
-      <small class="field-help">Use a busca para filtrar e depois selecione o cliente abaixo.</small>
+      <small class="field-help">Filtra a lista sem perder a opção de selecionar.</small>
     </label>
     <label>Cliente
       <select required name="client_id" id="clientSelect">
@@ -43,9 +70,9 @@
         <option {{ 'selected' if order and order.status == 'Cancelada' else '' }}>Cancelada</option>
       </select>
     </label>
-    <label>KM atual<input type="number" name="km_atual" value="{{ order.km_atual if order else 0 }}"></label>
-    <label>Mão de obra<input name="labor_value" value="{{ '%.2f'|format(order.labor_value) if order else '0,00' }}" placeholder="0,00"></label>
-    <label>Desconto<input name="discount" value="{{ '%.2f'|format(order.discount) if order else '0,00' }}" placeholder="0,00"></label>
+    <label>KM atual<input type="number" inputmode="numeric" name="km_atual" value="{{ order.km_atual if order else 0 }}"></label>
+    <label>Mão de obra<input name="labor_value" inputmode="decimal" value="{{ '%.2f'|format(order.labor_value) if order else '0,00' }}" placeholder="0,00"></label>
+    <label>Desconto<input name="discount" inputmode="decimal" value="{{ '%.2f'|format(order.discount) if order else '0,00' }}" placeholder="0,00"></label>
     <label class="wide">Serviço realizado / diagnóstico<textarea name="description" rows="4" placeholder="Ex: Troca de óleo, revisão de freio, diagnóstico elétrico...">{{ order.description if order else '' }}</textarea></label>
     <label class="wide">Observações<textarea name="notes" rows="3" placeholder="Garantia, próximos serviços, recados para o cliente...">{{ order.notes if order else '' }}</textarea></label>
   </div>
@@ -57,35 +84,11 @@
 
   <div class="items-box" id="itemsBox">
     {% for item in items %}
-      <div class="item-row">
-        <input type="search" class="product-search" autocomplete="off" value="{{ item.name }}" placeholder="Buscar item no estoque..." oninput="filterProductSelect(this)" onkeydown="selectFirstProduct(event, this)">
-        <select name="inventory_id" class="product-select" onchange="fillProduct(this)">
-          <option value="">Item manual</option>
-          {% for p in inventory %}
-            <option value="{{ p.id }}" data-name="{{ p.name }}" data-price="{{ '%.2f'|format(p.unit_price) }}" data-search="{{ p.name }} {{ p.category or '' }} {{ '%.2f'|format(p.unit_price) }}" {{ 'selected' if item.inventory_id == p.id else '' }}>{{ p.name }} | {{ money(p.unit_price) }} | qtd {{ p.qty }}</option>
-          {% endfor %}
-        </select>
-        <input name="item_name" value="{{ item.name }}" placeholder="Nome do item">
-        <input name="item_qty" value="{{ '%.2f'|format(item.qty) }}" placeholder="Qtd">
-        <input name="item_price" value="{{ '%.2f'|format(item.unit_price) }}" placeholder="Preço">
-        <button class="mini danger" type="button" onclick="this.closest('.item-row').remove()">Remover</button>
-      </div>
+      {{ item_row(item) }}
     {% endfor %}
     {% if items|length == 0 %}
       {% for i in range(3) %}
-      <div class="item-row">
-        <input type="search" class="product-search" autocomplete="off" placeholder="Buscar item no estoque..." oninput="filterProductSelect(this)" onkeydown="selectFirstProduct(event, this)">
-        <select name="inventory_id" class="product-select" onchange="fillProduct(this)">
-          <option value="">Item manual</option>
-          {% for p in inventory %}
-            <option value="{{ p.id }}" data-name="{{ p.name }}" data-price="{{ '%.2f'|format(p.unit_price) }}" data-search="{{ p.name }} {{ p.category or '' }} {{ '%.2f'|format(p.unit_price) }}">{{ p.name }} | {{ money(p.unit_price) }} | qtd {{ p.qty }}</option>
-          {% endfor %}
-        </select>
-        <input name="item_name" placeholder="Nome do item">
-        <input name="item_qty" value="1" placeholder="Qtd">
-        <input name="item_price" placeholder="Preço">
-        <button class="mini danger" type="button" onclick="this.closest('.item-row').remove()">Remover</button>
-      </div>
+        {{ item_row() }}
       {% endfor %}
     {% endif %}
   </div>
@@ -97,19 +100,7 @@
 </form>
 
 <template id="itemRowTemplate">
-  <div class="item-row">
-    <input type="search" class="product-search" autocomplete="off" placeholder="Buscar item no estoque..." oninput="filterProductSelect(this)" onkeydown="selectFirstProduct(event, this)">
-    <select name="inventory_id" class="product-select" onchange="fillProduct(this)">
-      <option value="">Item manual</option>
-      {% for p in inventory %}
-        <option value="{{ p.id }}" data-name="{{ p.name }}" data-price="{{ '%.2f'|format(p.unit_price) }}" data-search="{{ p.name }} {{ p.category or '' }} {{ '%.2f'|format(p.unit_price) }}">{{ p.name }} | {{ money(p.unit_price) }} | qtd {{ p.qty }}</option>
-      {% endfor %}
-    </select>
-    <input name="item_name" placeholder="Nome do item">
-    <input name="item_qty" value="1" placeholder="Qtd">
-    <input name="item_price" placeholder="Preço">
-    <button class="mini danger" type="button" onclick="this.closest('.item-row').remove()">Remover</button>
-  </div>
+  {{ item_row() }}
 </template>
 {% endblock %}
 
@@ -128,13 +119,14 @@ function firstVisibleOption(select){
   return [...select.options].find((opt, index) => index > 0 && !opt.hidden);
 }
 
-function selectFirstFromSearch(event, inputId, selectId, callback){
+function selectFirstFromSearch(event, selectId, callback){
   if(event.key !== 'Enter') return;
   event.preventDefault();
   const select = document.getElementById(selectId);
   const first = firstVisibleOption(select);
   if(first){
     select.value = first.value;
+    select.dispatchEvent(new Event('change'));
     if(callback) callback();
   }
 }
@@ -213,9 +205,9 @@ const vehicleSearch = document.getElementById('vehicleSearch');
 const clientSelect = document.getElementById('clientSelect');
 
 clientSearch.addEventListener('input', filterClients);
-clientSearch.addEventListener('keydown', (event) => selectFirstFromSearch(event, 'clientSearch', 'clientSelect', filterVehicles));
+clientSearch.addEventListener('keydown', (event) => selectFirstFromSearch(event, 'clientSelect', filterVehicles));
 vehicleSearch.addEventListener('input', filterVehicles);
-vehicleSearch.addEventListener('keydown', (event) => selectFirstFromSearch(event, 'vehicleSearch', 'vehicleSelect'));
+vehicleSearch.addEventListener('keydown', (event) => selectFirstFromSearch(event, 'vehicleSelect'));
 clientSelect.addEventListener('change', filterVehicles);
 
 filterClients();

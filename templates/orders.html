@@ -20,12 +20,12 @@
       <tbody>
         {% for os in orders %}
         <tr>
-          <td><a href="{{ url_for('order_view', order_id=os.id) }}"><strong>#{{ os.id }}</strong></a></td>
-          <td>{{ br_date(os.order_date) }}</td>
-          <td>{{ os.client_name }}</td>
-          <td>{{ os.plate or 'Sem placa' }} {{ os.model }}</td>
-          <td><strong>{{ money(os.total) }}</strong></td>
-          <td>
+          <td data-label="OS"><a href="{{ url_for('order_view', order_id=os.id) }}"><strong>#{{ os.id }}</strong></a></td>
+          <td data-label="Data">{{ br_date(os.order_date) }}</td>
+          <td data-label="Cliente">{{ os.client_name }}</td>
+          <td data-label="Veículo">{{ os.plate or 'Sem placa' }} {{ os.model }}</td>
+          <td data-label="Total"><strong>{{ money(os.total) }}</strong></td>
+          <td data-label="Status">
             <form method="post" action="{{ url_for('order_status', order_id=os.id) }}">
               <select name="status" onchange="this.form.submit()">
                 <option {{ 'selected' if os.status == 'Aberta' else '' }}>Aberta</option>
@@ -34,7 +34,7 @@
               </select>
             </form>
           </td>
-          <td class="actions">
+          <td class="actions" data-label="Ações">
             <a class="mini" href="{{ url_for('order_view', order_id=os.id) }}">Ver</a>
             <a class="mini" href="{{ url_for('order_edit', order_id=os.id) }}">Editar</a>
             <form method="post" action="{{ url_for('order_delete', order_id=os.id) }}" onsubmit="return confirm('Excluir esta OS? O estoque das peças será restaurado.')">

@@ -1,13 +1,16 @@
-# Sistema SN Serviços Automotivos
+# SN Serviços Automotivos
 
-Sistema web para oficina mecânica, com:
+Sistema web da SN Serviços Automotivos, pronto para rodar no Coolify e com visual melhorado para celular.
 
-- Dashboard com resumo
+## Funções
+
 - Cadastro de clientes e veículos
-- Ordens de serviço com peças, mão de obra, desconto e impressão
-- Estoque com baixa automática ao lançar peças na OS
-- Relatórios por período
-- Logo da SN Serviços Automotivos já configurada
+- Ordem de serviço com busca de cliente, busca de veículo e busca de itens
+- Estoque com cadastro, edição, exclusão e baixa automática na OS
+- Relatórios financeiros por período
+- Impressão / salvar PDF da OS
+- Layout responsivo estilo aplicativo de celular
+- Manifest PWA para adicionar na tela inicial do celular
 
 ## Rodar localmente
 
@@ -16,29 +19,32 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Abra:
+Acesse:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-## Deploy no Coolify
+## Coolify
 
-O projeto já está pronto para Docker/Coolify.
+Use **Dockerfile** como Build Pack e porta **5000**.
 
-### Opção recomendada: Dockerfile
+Variáveis recomendadas:
 
-- Build Pack: Dockerfile
-- Porta interna: 5000
-- Variáveis:
-  - PORT=5000
-  - DATA_DIR=/app/data
-  - SECRET_KEY=coloque-uma-chave-grande-aqui
-- Persistent Storage:
-  - /app/data
+```env
+PORT=5000
+DATA_DIR=/app/data
+SECRET_KEY=sn-servicos-automotivos
+```
 
-O banco SQLite fica em `/app/data/sn_servicos.db`, para não perder dados no redeploy.
+Persistent Storage:
 
-### Opção Docker Compose
+```text
+/app/data
+```
 
-Use o `docker-compose.yml` deste projeto. Ele já cria um volume chamado `sn_servicos_data` apontando para `/app/data`.
+Esse volume preserva o banco SQLite entre deploys.
+
+## Celular
+
+No navegador do celular, abra o endereço do sistema e use a opção **Adicionar à Tela de Início**. Ele abre com aparência de app, menu inferior e botão rápido para nova OS.

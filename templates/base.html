@@ -2,22 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SN Oficina">
   <title>{% block title %}SN Serviços Automotivos{% endblock %}</title>
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+  <header class="mobile-appbar no-print">
+    <a class="mobile-brand" href="{{ url_for('dashboard') }}" aria-label="Início">
+      <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="SN Serviços Automotivos">
+      <span>SN Oficina</span>
+    </a>
+    <a class="mobile-pill" href="{{ url_for('order_new') }}">+ OS</a>
+  </header>
+
   <aside class="sidebar no-print">
     <a class="brand" href="{{ url_for('dashboard') }}">
       <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="SN Serviços Automotivos">
       <span>Sistema Oficina</span>
     </a>
-    <nav>
-      <a href="{{ url_for('dashboard') }}">Início</a>
-      <a href="{{ url_for('clients') }}">Clientes & Veículos</a>
-      <a href="{{ url_for('orders') }}">Ordens de Serviço</a>
-      <a href="{{ url_for('inventory') }}">Estoque</a>
-      <a href="{{ url_for('reports') }}">Relatórios</a>
+    <nav class="side-nav">
+      <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}"><span>⌂</span>Início</a>
+      <a class="{{ 'active' if request.endpoint in ['clients','client_new','client_edit'] else '' }}" href="{{ url_for('clients') }}"><span>👤</span>Clientes & Veículos</a>
+      <a class="{{ 'active' if request.endpoint in ['orders','order_new','order_edit','order_view'] else '' }}" href="{{ url_for('orders') }}"><span>🧾</span>Ordens de Serviço</a>
+      <a class="{{ 'active' if request.endpoint in ['inventory','inventory_edit'] else '' }}" href="{{ url_for('inventory') }}"><span>🧰</span>Estoque</a>
+      <a class="{{ 'active' if request.endpoint == 'reports' else '' }}" href="{{ url_for('reports') }}"><span>📊</span>Relatórios</a>
     </nav>
   </aside>
 
@@ -47,6 +62,23 @@
     </section>
   </main>
 
+  <a class="mobile-fab no-print" href="{{ url_for('order_new') }}" aria-label="Nova ordem de serviço">+</a>
+
+  <nav class="bottom-nav no-print" aria-label="Navegação principal">
+    <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}"><span>⌂</span><small>Início</small></a>
+    <a class="{{ 'active' if request.endpoint in ['clients','client_new','client_edit'] else '' }}" href="{{ url_for('clients') }}"><span>👤</span><small>Clientes</small></a>
+    <a class="{{ 'active' if request.endpoint in ['orders','order_new','order_edit','order_view'] else '' }}" href="{{ url_for('orders') }}"><span>🧾</span><small>OS</small></a>
+    <a class="{{ 'active' if request.endpoint in ['inventory','inventory_edit'] else '' }}" href="{{ url_for('inventory') }}"><span>🧰</span><small>Estoque</small></a>
+    <a class="{{ 'active' if request.endpoint == 'reports' else '' }}" href="{{ url_for('reports') }}"><span>📊</span><small>Relatório</small></a>
+  </nav>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function(){
+        navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+      });
+    }
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
